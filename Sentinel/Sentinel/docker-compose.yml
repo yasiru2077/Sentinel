@@ -1,0 +1,48 @@
+services:
+
+  app:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    container_name: sentinel-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/sentinel?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["mvn", "spring-boot:run"]
+    networks:
+      - sentinel
+
+  db:
+    image: mysql:8.0
+    container_name: sentinel-db
+    environment:
+      MYSQL_DATABASE: sentinel
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sentinel
+
+volumes:
+  mysql_data:
+
+networks:
+  sentinel:
+    driver: bridge
