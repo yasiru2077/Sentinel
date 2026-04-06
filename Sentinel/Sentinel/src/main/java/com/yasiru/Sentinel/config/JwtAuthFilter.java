@@ -26,6 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(
@@ -41,6 +42,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
+
+        if (tokenBlacklistService.isBlacklisted(jwt)){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Token has been invalidated");
+            return;
+        }
 
         try {
             final String email = jwtService.extractSubject(jwt);
@@ -68,4 +74,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request,response);
     }
+
+
 }

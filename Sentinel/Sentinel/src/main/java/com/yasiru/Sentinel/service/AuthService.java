@@ -1,9 +1,11 @@
 package com.yasiru.Sentinel.service;
 
 import com.yasiru.Sentinel.config.JwtService;
+import com.yasiru.Sentinel.config.TokenBlacklistService;
 import com.yasiru.Sentinel.dto.request.LoginRequest;
 import com.yasiru.Sentinel.dto.request.RegisterRequest;
 import com.yasiru.Sentinel.dto.response.AuthResponse;
+import com.yasiru.Sentinel.dto.response.LogoutResponse;
 import com.yasiru.Sentinel.entity.User;
 import com.yasiru.Sentinel.entity.UserStatus;
 import com.yasiru.Sentinel.repository.UserRepository;
@@ -21,6 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Transactional
     public AuthResponse register(RegisterRequest request){
@@ -64,5 +67,17 @@ public class AuthService {
         return AuthResponse.of(token,user);
 
     }
+
+    public LogoutResponse logout(String authHeader){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+            throw new IllegalArgumentException("Missing or invalid Authorization header");
+        }
+
+        String token = authHeader.substring(7);
+        tokenBlacklistService.blacklist(token);
+        return new LogoutResponse("Logged out successfully");
+    }
+
+
 
 }
