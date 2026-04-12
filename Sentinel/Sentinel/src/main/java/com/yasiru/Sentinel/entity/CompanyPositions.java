@@ -22,17 +22,28 @@ public class CompanyPositions {
     private String title;
 
     @Column(name = "hourly_rate", nullable = false)
-    private double hourly_rate;
+    private double hourlyRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_admin", nullable=false)
     private User createdByAdmin;
 
     @Column(name = "created_at", nullable = false ,updatable = false)
-    private Instant created_at;
+    private Instant createdAt;
 
     @Column(name = "updated_at",nullable = false)
-    private Instant updated_at;
+    private Instant updatedAt;
+
+    @PrePersist
+    protected void onCreate(){
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate(){
+        updatedAt = Instant.now();
+    }
 
 
 

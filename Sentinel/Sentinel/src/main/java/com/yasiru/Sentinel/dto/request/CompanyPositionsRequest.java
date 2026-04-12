@@ -1,4 +1,14 @@
 package com.yasiru.Sentinel.dto.request;
 
-public record CompanyPositionsRequest() {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CompanyPositionsRequest(
+        @NotBlank(message = "Title is required")
+        String title,
+        @NotNull(message = "Hourly rate is required")
+        double hourly_rate
+
+
+        ) {
 }
