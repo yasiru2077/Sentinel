@@ -47,9 +47,14 @@ public class PositionController {
     @PutMapping("/{id}")
     public ResponseEntity<CompanyPositionResponse>  updatePosition(
      @Valid @RequestBody  CompanyPositionsRequest request,
-     @PathVariable Long id
+     @PathVariable Long id,
+     @AuthenticationPrincipal User admin
     ){
-        return ResponseEntity.ok(companyPositionService.updatePosition(id,request));
+        return ResponseEntity.ok(
+                companyPositionService.updatePosition(id,request,admin.getId())
+        );
     }
+
+
 
 }

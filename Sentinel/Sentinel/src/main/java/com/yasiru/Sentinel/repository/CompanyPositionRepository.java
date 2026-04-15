@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompanyPositionRepository extends JpaRepository <CompanyPositions,Long>{
 
-
     boolean existsByTitle(String title);
 }

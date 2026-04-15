@@ -21,18 +21,25 @@ public class CompanyPositionService {
 
     public Page<CompanyPositionResponse> getAllPositions(Pageable pageable) {
 
-        return  companyPositionRepository.findAll(pageable).map(CompanyPositionResponse::from);
+        return companyPositionRepository.findAll(pageable).map(CompanyPositionResponse::from);
 
     }
 
     @Transactional
-    public CompanyPositionResponse createPosition(CompanyPositionsRequest request,Long adminId){
-        if (companyPositionRepository.existsByTitle(request.title())){
+    public CompanyPositionResponse getPosition(Long id) {
+        return companyPositionRepository.findById(id)
+                .map(CompanyPositionResponse::from)
+                .orElseThrow(() -> new IllegalArgumentException("Position not found id: " + id));
+    }
+
+    @Transactional
+    public CompanyPositionResponse createPosition(CompanyPositionsRequest request, Long adminId) {
+        if (companyPositionRepository.existsByTitle(request.title())) {
             throw new IllegalArgumentException("A position with this title already exists");
         }
 
         User admin = userRepository.findById(adminId)
-                .orElseThrow(()->new IllegalArgumentException("Admin not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
 
         CompanyPositions position = CompanyPositions.builder()
                 .title(request.title())
@@ -50,18 +57,31 @@ public class CompanyPositionService {
 
 
     @Transactional
-    public CompanyPositionResponse getPosition(Long id) {
-        return companyPositionRepository.findById(id)
-                .map(CompanyPositionResponse::from)
-                .orElseThrow(()->new IllegalArgumentException("Position not found id: "+id));
-    }
+    public CompanyPositionResponse updatePosition(Long id, CompanyPositionsRequest request, Long adminId) {
 
-    public CompanyPositionResponse updatePosition(Long id, CompanyPositionsRequest request) {
-        CompanyPositions positions = companyPositionRepository.findById(id)
+        CompanyPositions position = companyPositionRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("Position not found with id: "+id));
 
+        User admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
 
+        position.setTitle(request.title());
+        position.setHourlyRate(request.hourly_rate());
+        position.setCreatedByAdmin(admin);
+
+        return CompanyPositionResponse.from(companyPositionRepository.save(position));
 
 
     }
+
+
+    @Transactional
+    public void deleteProject(Long positionId){
+        if (!companyPositionRepository.existsById(positionId)){
+            throw new IllegalArgumentException("Position not found");
+        }
+
+        companyPositionRepository.deleteById(positionId);
+    }
+
 }
