@@ -30,6 +30,11 @@ public class PositionController {
             return ResponseEntity.ok(companyPositionService.getAllPositions(pageable));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CompanyPositionResponse> getPosition(@PathVariable Long id){
+        return ResponseEntity.ok(companyPositionService.getPosition(id));
+    }
+
     @PostMapping
     public ResponseEntity<CompanyPositionResponse> createPosition(
             @Valid @RequestBody CompanyPositionsRequest request,
@@ -37,6 +42,14 @@ public class PositionController {
             ){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(companyPositionService.createPosition(request, admin.getId()));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CompanyPositionResponse>  updatePosition(
+     @Valid @RequestBody  CompanyPositionsRequest request,
+     @PathVariable Long id
+    ){
+        return ResponseEntity.ok(companyPositionService.updatePosition(id,request));
     }
 
 }

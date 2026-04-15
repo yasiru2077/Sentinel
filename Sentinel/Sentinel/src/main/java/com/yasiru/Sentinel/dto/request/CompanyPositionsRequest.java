@@ -7,7 +7,7 @@ public record CompanyPositionsRequest(
         @NotBlank(message = "Title is required")
         String title,
         @NotNull(message = "Hourly rate is required")
-        double hourly_rate
+        Double hourly_rate
 
 
         ) {

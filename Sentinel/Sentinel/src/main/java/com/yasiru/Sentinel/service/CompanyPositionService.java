@@ -49,4 +49,19 @@ public class CompanyPositionService {
     }
 
 
+    @Transactional
+    public CompanyPositionResponse getPosition(Long id) {
+        return companyPositionRepository.findById(id)
+                .map(CompanyPositionResponse::from)
+                .orElseThrow(()->new IllegalArgumentException("Position not found id: "+id));
+    }
+
+    public CompanyPositionResponse updatePosition(Long id, CompanyPositionsRequest request) {
+        CompanyPositions positions = companyPositionRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("Position not found with id: "+id));
+
+
+
+
+    }
 }
