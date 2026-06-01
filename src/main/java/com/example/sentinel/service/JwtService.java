@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 @Service
 public class JwtService {
 
@@ -46,7 +48,7 @@ public class JwtService {
     }
 
     public String extractSubject(String token){
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getSubject);
     }
 
     private Date extractExpiration(String token){
