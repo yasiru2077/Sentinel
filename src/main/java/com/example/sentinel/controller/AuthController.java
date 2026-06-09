@@ -2,7 +2,7 @@ package com.example.sentinel.controller;
 
 import com.example.sentinel.dto.request.LoginRequest;
 import com.example.sentinel.dto.request.RegisterRequest;
-import com.example.sentinel.dto.response.AuthResponse;
+import com.example.sentinel.dto.response.RegisterResponse;
 import com.example.sentinel.dto.response.LoginResponse;
 import com.example.sentinel.service.AuthService;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 

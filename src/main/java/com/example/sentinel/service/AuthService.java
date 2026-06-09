@@ -2,7 +2,7 @@ package com.example.sentinel.service;
 
 import com.example.sentinel.dto.request.LoginRequest;
 import com.example.sentinel.dto.request.RegisterRequest;
-import com.example.sentinel.dto.response.AuthResponse;
+import com.example.sentinel.dto.response.RegisterResponse;
 import com.example.sentinel.dto.response.LoginResponse;
 import com.example.sentinel.entity.User;
 import com.example.sentinel.repository.UserRepository;
@@ -24,7 +24,7 @@ public class AuthService {
 
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already in use");
         }
@@ -42,7 +42,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return AuthResponse.of(token, user);
+        return RegisterResponse.of(token, user);
 
     }
 
