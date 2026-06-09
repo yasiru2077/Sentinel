@@ -2,9 +2,11 @@ package com.example.sentinel.dto.response;
 
 import com.example.sentinel.entity.User;
 
+import java.util.UUID;
+
 public record AuthResponse(String accessToken,
                            String tokenType,
-                           Long userId,
+                           UUID userId,
                            String username,
                            String email) {
 

@@ -22,7 +22,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request){
-        if (userRepository.existByEmail(request.email())){
+        if (userRepository.existsByEmail(request.email())){
             throw new IllegalArgumentException("Email already in use");
         }
 

@@ -7,6 +7,8 @@ services:
       - DB_URL=${DB_URL}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - APP_JWT_SECRET=${APP_JWT_SECRET}
+      - APP_JWT_EXPIRATION_MS=${APP_JWT_EXPIRATION_MS}
     depends_on:
       - db
 
