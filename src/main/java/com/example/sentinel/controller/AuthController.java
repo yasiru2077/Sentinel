@@ -1,5 +1,6 @@
 package com.example.sentinel.controller;
 
+import com.example.sentinel.dto.request.LoginRequest;
 import com.example.sentinel.dto.request.RegisterRequest;
 import com.example.sentinel.dto.response.AuthResponse;
 import com.example.sentinel.service.AuthService;
@@ -22,6 +23,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
+        return ResponseEntity.ok(authService.login(request));
     }
 
 }

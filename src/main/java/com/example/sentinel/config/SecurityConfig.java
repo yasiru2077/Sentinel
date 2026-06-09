@@ -35,7 +35,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/**"
+            "/api/auth/**",
     };
 
     @Bean

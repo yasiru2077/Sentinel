@@ -64,10 +64,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             logger.error("Could not process JWT token", e);
-            if (!response.isCommitted()) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
-            }
-            return;
         }
 
         filterChain.doFilter(request, response);
