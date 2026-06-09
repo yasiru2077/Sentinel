@@ -3,6 +3,7 @@ package com.example.sentinel.service;
 import com.example.sentinel.dto.request.LoginRequest;
 import com.example.sentinel.dto.request.RegisterRequest;
 import com.example.sentinel.dto.response.AuthResponse;
+import com.example.sentinel.dto.response.LoginResponse;
 import com.example.sentinel.entity.User;
 import com.example.sentinel.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -45,7 +46,7 @@ public class AuthService {
 
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
@@ -56,6 +57,6 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         String token = jwtService.generateToken(user);
-        return AuthResponse.of(token,user);
+        return LoginResponse.of(token,user);
     }
 }
