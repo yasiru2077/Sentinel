@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record TaskResponse(
         UUID id,
+        UUID userId,
         String title,
         String description,
         Instant createdAt,

@@ -24,7 +24,7 @@ clean:
 	docker compose --env-file .env down -v --rmi all
 
 db-shell:
-	docker compose exec db psql -U postgres -d matrimony_db
+	docker compose exec db psql -U root -d sentinel_db
 
 db-flush:
-	docker compose --env-file .env exec db psql -U postgres -d matrimony_db -c "TRUNCATE TABLE users CASCADE;"
+	docker compose --env-file .env exec db psql -U root -d sentinel_db -c "TRUNCATE TABLE users CASCADE;"
