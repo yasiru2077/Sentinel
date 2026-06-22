@@ -6,10 +6,10 @@ import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "tasks")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,7 +24,7 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "title", nullable = false, length = 500)
+    @Column(name = "title", nullable = false,length = 500)
     private String title;
 
     @Column(name = "description", length = 2000)
@@ -33,19 +33,18 @@ public class Task {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at",nullable = false)
     private Instant updatedAt;
 
     @PrePersist
-    protected void onCreate() {
+    protected void onCreate(){
         createdAt = Instant.now();
         updatedAt = Instant.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    protected void onUpdate(){
         updatedAt = Instant.now();
     }
-
 
 }
