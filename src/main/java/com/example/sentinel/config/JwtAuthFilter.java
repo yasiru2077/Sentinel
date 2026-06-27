@@ -1,5 +1,6 @@
 package com.example.sentinel.config;
 
+import com.example.sentinel.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
