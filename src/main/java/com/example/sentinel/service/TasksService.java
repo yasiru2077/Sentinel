@@ -4,6 +4,8 @@ import com.example.sentinel.dto.request.TaskRequest;
 import com.example.sentinel.dto.response.TaskResponse;
 import com.example.sentinel.entity.Task;
 import com.example.sentinel.entity.User;
+import com.example.sentinel.exception.ResourceNotFoundException;
+import com.example.sentinel.exception.UnauthorizedException;
 import com.example.sentinel.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,10 @@ public class TasksService {
 
     private final TaskRepository taskRepository;
 
-    public TaskResponse create(TaskRequest request, User user){
+    public TaskResponse create(TaskRequest request, User user) {
+
+        if (user == null) throw new UnauthorizedException("Authentication required");
+
         Task task = Task.builder()
                 .title(request.title())
                 .description(request.description())
@@ -27,35 +32,42 @@ public class TasksService {
         return toResponse(taskRepository.save(task));
     }
 
-    private TaskResponse toResponse(Task task){
+    private TaskResponse toResponse(Task task) {
         return new TaskResponse(
-          task.getId(),
-          task.getUser().getId(),
-          task.getTitle(),
-          task.getDescription(),
-          task.getCreatedAt(),
-          task.getUpdatedAt()
+                task.getId(),
+                task.getUser().getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getCreatedAt(),
+                task.getUpdatedAt()
         );
     }
 
 
-    public List<TaskResponse> getAll(User user){
+    public List<TaskResponse> getAll(User user) {
+
+        if (user == null) throw new UnauthorizedException("Authentication required");
+
         return taskRepository.findByUser(user)
                 .stream().map(this::toResponse)
                 .toList();
     }
 
-    public TaskResponse getById(UUID id,User user){
-        Task task = taskRepository.findByIdAndUser(id,user)
-                .orElseThrow(()->new RuntimeException("Task not found"));
+    public TaskResponse getById(UUID id, User user) {
+
+        if (user == null) throw new UnauthorizedException("Authentication required");
+
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         return toResponse(task);
     }
 
 
-    public TaskResponse update(UUID id,TaskRequest request,User user){
-        Task task = taskRepository.findByIdAndUser(id,user)
-                .orElseThrow(()->new RuntimeException("Task not found"));
+    public TaskResponse update(UUID id, TaskRequest request, User user) {
+        if (user == null) throw new UnauthorizedException("Authentication required");
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         task.setTitle(request.title());
         task.setDescription(request.description());
@@ -63,13 +75,14 @@ public class TasksService {
         return toResponse(taskRepository.save(task));
     }
 
-    public void delete(UUID id, User user){
-        Task task = taskRepository.findByIdAndUser(id,user)
-                .orElseThrow(()->new RuntimeException("Task not found"));
+    public void delete(UUID id, User user) {
+        if (user == null) throw new UnauthorizedException("Authentication required");
+
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         taskRepository.delete(task);
     }
-
 
 
 }
