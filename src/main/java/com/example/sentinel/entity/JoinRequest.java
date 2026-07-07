@@ -1,5 +1,6 @@
 package com.example.sentinel.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,13 +8,15 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "join_requests", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_join_requests_user_company", columnNames = {"user_id", "company_id"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Task {
+public class JoinRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,26 +24,16 @@ public class Task {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stage_id", nullable = false)
-    private Stage stage;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "priority", nullable = false, length = 20)
-    private Priority priority;
-
-    @Column(name = "title", nullable = false, length = 500)
-    private String title;
-
-    @Column(name = "description", length = 2000)
-    private String description;
+    @Column(name = "status", nullable = false, length = 50)
+    private Status status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -52,6 +45,7 @@ public class Task {
     protected void onCreate() {
         createdAt = Instant.now();
         updatedAt = Instant.now();
+        if (status == null) status = Status.PENDING;
     }
 
     @PreUpdate

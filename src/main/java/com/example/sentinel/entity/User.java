@@ -32,6 +32,9 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(name = "job_title", nullable = false, length = 100)
+    private String jobTitle;
+
     @Column(name = "created_at",nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -48,7 +51,6 @@ public class User implements UserDetails {
     protected void onUpdate(){
         updatedAt = Instant.now();
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

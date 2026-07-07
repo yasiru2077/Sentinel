@@ -7,13 +7,15 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "projects", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_projects_company_name", columnNames = {"company_id", "project_name"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Task {
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -21,28 +23,20 @@ public class Task {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stage_id", nullable = false)
-    private Stage stage;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "priority", nullable = false, length = 20)
-    private Priority priority;
-
-    @Column(name = "title", nullable = false, length = 500)
-    private String title;
+    @Column(name = "project_name", nullable = false)
+    private String projectName;
 
     @Column(name = "description", length = 2000)
     private String description;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
@@ -55,8 +49,9 @@ public class Task {
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    protected void onUpdated() {
         updatedAt = Instant.now();
     }
+
 
 }
