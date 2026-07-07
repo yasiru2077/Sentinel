@@ -11,7 +11,8 @@ public record RegisterResponse(
         String tokenType,
         UUID userId,
         String username,
-        String email
+        String email,
+        String jobTitle
 
 ) {
     public static RegisterResponse of(String token, User user) {
@@ -20,7 +21,8 @@ public record RegisterResponse(
                 "Bearer",
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getJobTitle()
         );
     }
 }

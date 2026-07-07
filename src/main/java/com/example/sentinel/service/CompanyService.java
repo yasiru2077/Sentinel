@@ -32,7 +32,7 @@ public class CompanyService {
 
         if (user == null) throw new UnauthorizedException("Authentication required");
 
-        if (companyRepository.existsCompanyName(request.companyName())){
+        if (companyRepository.existsByCompanyName(request.companyName())){
             throw new ConflictException("Company name already taken");
         }
 
