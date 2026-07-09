@@ -16,4 +16,6 @@ public interface StageRepository extends JpaRepository<Stage, UUID> {
 
     @Query("SELECT COALESCE(MAX(s.orderIndex), -1) FROM Stage s WHERE s.project = :project")
     Integer findMaxOrderIndex(@Param("project") Project project);
+
+    Optional<Stage> findByProjectAndOrderIndex(Project project, int orderIndex);
 }

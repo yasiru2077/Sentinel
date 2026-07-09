@@ -40,5 +40,9 @@ public class AuthController {
                 authService.login(request),"Login successful")
         );
     }
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        return ResponseEntity.ok(ApiResponse.success(null, "Logout successful"));
+    }
 
 }

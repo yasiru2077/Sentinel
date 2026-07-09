@@ -78,8 +78,8 @@ public class JoinRequestService {
         Role role = Role.builder()
                 .user(joinRequest.getUser())
                 .company(joinRequest.getCompany())
-                .jobPosition(request.jobPosition())
-                .roleType(RoleType.MEMBER)
+                .jobPosition(joinRequest.getUser().getJobTitle())
+                .roleType(request.roleType() != null ? request.roleType() : RoleType.MEMBER)
                 .build();
         roleRepository.save(role);
 

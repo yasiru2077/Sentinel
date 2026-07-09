@@ -85,7 +85,22 @@ public class StageService {
         Stage stage = stageRepository.findByIdAndProject(stageId, project)
                 .orElseThrow(() -> new ResourceNotFoundException("Stage not found"));
 
-        stage.setOrderIndex(request.orderIndex());
+        int oldIndex = stage.getOrderIndex();
+        int newIndex = request.orderIndex();
+
+        if (oldIndex == newIndex) return StageResponse.of(stage);
+
+        // Find the stage currently sitting at the target index and swap
+        stageRepository.findByProjectAndOrderIndex(project, newIndex)
+                .ifPresent(other -> {
+                    // Move the displaced stage to a temporary high index to avoid unique constraint
+                    other.setOrderIndex(-1);
+                    stageRepository.saveAndFlush(other);
+                    other.setOrderIndex(oldIndex);
+                    stageRepository.save(other);
+                });
+
+        stage.setOrderIndex(newIndex);
         stageRepository.save(stage);
 
         return StageResponse.of(stage);

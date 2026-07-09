@@ -113,6 +113,7 @@ public class TasksService {
                 task.getStage().getId(),
                 task.getStage().getStageName(),
                 task.getCreatedBy().getId(),
+                task.getCreatedBy().getUsername(),
                 task.getPriority(),
                 task.getTitle(),
                 task.getDescription(),
