@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("NullableProblems") // Add this to Method 'isCredentialsNonExpired()' is identical to its super method
+@SuppressWarnings("NullableProblems")
 @Entity
 @Table(name = "users")
 @Getter
@@ -20,25 +20,29 @@ import java.util.UUID;
 @Builder
 public class User implements UserDetails {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "uuid")
     private UUID id;
-    @Column(nullable = false,unique = true,length = 50)
+    @Column(nullable = false,unique = true, length = 50)
     private String username;
     @Column(nullable = false,unique = true,length = 100)
     private String email;
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(name = "created_at",nullable = false,updatable = false)
+    @Column(name = "job_title", nullable = false, length = 100)
+    private String jobTitle;
+
+    @Column(name = "created_at",nullable = false, updatable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at",nullable = false)
     private Instant updatedAt;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreated(){
         createdAt = Instant.now();
         updatedAt = Instant.now();
     }
@@ -49,7 +53,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
@@ -65,21 +69,23 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return UserDetails.super.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return UserDetails.super.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return UserDetails.super.isCredentialsNonExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return UserDetails.super.isEnabled();
     }
+
+
 }

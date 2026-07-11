@@ -31,11 +31,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFIlter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
+    private final AppProperties appProperties;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/**",
+            "/api/auth/**"
     };
 
     @Bean
@@ -58,38 +59,33 @@ public class SecurityConfig {
                                 .authenticated()
                 ).sessionManagement(
                         session -> session
-                                .sessionCreationPolicy(
-                                        SessionCreationPolicy.STATELESS
-                                )
-
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFIlter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-            throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(appProperties.getCors().getAllowedOrigins());
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setAllowCredentials(true);
@@ -97,6 +93,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**",config);
         return source;
     }
-
 
 }

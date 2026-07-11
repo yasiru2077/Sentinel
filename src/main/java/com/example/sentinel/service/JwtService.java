@@ -24,11 +24,11 @@ public class JwtService {
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(),userDetails);
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims,UserDetails userDetails){
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
@@ -38,38 +38,39 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token,UserDetails userDetails){
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String subject = extractSubject(token);
         return subject.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    public boolean isTokenExpired(String token){
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public String extractSubject(String token){
+    public String extractSubject(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private Date extractExpiration(String token){
-        return extractClaim(token,Claims::getExpiration);
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
+                .build().
+                parseSignedClaims(token)
                 .getPayload();
     }
 
-    private SecretKey getSigningKey(){
+private SecretKey getSigningKey(){
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-    }
+}
+
 
 }

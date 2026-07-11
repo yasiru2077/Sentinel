@@ -1,9 +1,11 @@
 package com.example.sentinel.controller;
 
+
 import com.example.sentinel.dto.request.LoginRequest;
 import com.example.sentinel.dto.request.RegisterRequest;
-import com.example.sentinel.dto.response.RegisterResponse;
+import com.example.sentinel.dto.response.ApiResponse;
 import com.example.sentinel.dto.response.LoginResponse;
+import com.example.sentinel.dto.response.RegisterResponse;
 import com.example.sentinel.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +24,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    public ResponseEntity<ApiResponse<RegisterResponse>> register(
+            @Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(
+                        authService.register(request),"Registration successful")
+                );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        return ResponseEntity.ok(ApiResponse.success(
+                authService.login(request),"Login successful")
+        );
     }
-
-
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        return ResponseEntity.ok(ApiResponse.success(null, "Logout successful"));
+    }
 
 }

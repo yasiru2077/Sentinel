@@ -6,10 +6,10 @@ import lombok.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "tasks")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,8 +21,20 @@ public class Task {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stage_id", nullable = false)
+    private Stage stage;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false, length = 20)
+    private Priority priority;
 
     @Column(name = "title", nullable = false, length = 500)
     private String title;
@@ -46,6 +58,5 @@ public class Task {
     protected void onUpdate() {
         updatedAt = Instant.now();
     }
-
 
 }
